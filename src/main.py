@@ -39,7 +39,9 @@ def load_cookie(session_obj, filename="cookie.txt"):
 
 if not os.path.exists('cookie.txt'):
     session = requests.session()
-    res_cookie = session.get("http://httpbin/cookies/set/sessioncookie/bleach12345'")
+    res_cookie = session.get("http://httpbin/cookies/set/sessioncookie/bleach12345")
+    
+    print("main session cookies ssaving in main is", session.cookies)
     save_cookie(session.cookies, "cookie.txt")
 
 new_session = requests.session()
