@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  main:
+    container_name: session_main
+    image: mikeyy19xx/session_main:v0.0.1
+    build: 
+      context: .
+      target: base
+    ports:
+      - 9000:80
+    command: python main.py
+    depends_on:
+      - httpbin
+  
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+      - 8000:80
+    
+    
