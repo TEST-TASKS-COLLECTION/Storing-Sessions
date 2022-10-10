@@ -14,7 +14,7 @@ login_data = {
     "pw": "tyba"
 }
 
-url_get = "https://httpbin.org/get"
+url_get = "http://httpbin/get"
 # url_post = "https://httpbin.org/post"
 # url_post = "http://localhost:8000/post" # for local
 url_post = "http://httpbin/post" # through container
