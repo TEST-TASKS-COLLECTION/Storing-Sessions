@@ -1,14 +1,14 @@
-version: '3.7'
+version: '3'
 services:
-  main:
+  session_main:
     container_name: session_main
     image: mikeyy19xx/session_main:v0.0.1
     build: 
       context: .
-      target: base
+      # target: base
     ports:
-      - 9000:80
-    # command: python main.py
+      - "81:5000"
+    command: flask run -h 0.0.0.0 -p 5000
     tty: true
     stdin_open: true
     depends_on:
@@ -19,7 +19,7 @@ services:
   httpbin:
     image: kennethreitz/httpbin
     ports:
-      - 8000:80
+      - "8000:80"
   
   redis:
     image: "redis:alpine"
@@ -28,8 +28,36 @@ services:
     command: /bin/sh -c "redis-server"
     volumes:
       - redisdata:/data
-    
+  prometheus:
+    container_name: prometheus-svc
+    image: prom/prometheus
+    ports: 
+      - "9091:9090"
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+  grafana:
+    image: grafana/grafana:5.0.4
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  grafana-dashboards:
+    image: alpine:3.10
+    depends_on:
+      - grafana
+    volumes:
+      - ./grafana-data:/grafana
+    command: >
+      /bin/sh -c "
+        apk add --no-cache curl
+        echo 'waiting for grafana'
+        sleep 15s
+        cd /grafana
+        curl --request POST http://grafana:3000/api/datasources --header 'Content-Type: application/json' -d @datasources.json
+        curl --request POST http://grafana:3000/api/dashboards/db --header 'Content-Type: application/json' -d @dashboard.json"
+
 volumes:
-  redisdata: 
-    
-    
+  redisdata:    
