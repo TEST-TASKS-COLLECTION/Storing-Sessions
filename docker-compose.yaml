@@ -8,9 +8,13 @@ services:
       target: base
     ports:
       - 9000:80
-    command: python main.py
+    # command: python main.py
+    tty: true
+    stdin_open: true
     depends_on:
       - httpbin
+    volumes:
+      - ./src:/app
   
   httpbin:
     image: kennethreitz/httpbin
