@@ -10,7 +10,8 @@ async def main():
     # print("unsafe: ", aiohttp.CookieJar(unsafe=True)._cookies)
     # print("quote: ", aiohttp.CookieJar(quote_cookie=False)._cookies)
     # print("dummy: ", aiohttp.DummyCookieJar())
-    cookie = r.get('cookie').decode()
+    cookie = {"sessioncookie": r.get('cookie').decode()}
+    print(cookie)
     print(type(cookie))
     async with aiohttp.ClientSession(cookies=cookie) as session:
     # async with aiohttp.ClientSession() as session:

@@ -21,8 +21,9 @@ del_cookie()
 
 def save_cookie(cookie):
     print("Saving cookies redis")
-    print("we're saving this cookie", cookie, "--------", bytes(cookie, 'utf-8'))
-    # r.set("cookie", bytes(cookie, 'utf-8'))
+    print(cookie)
+    print("we're saving this cookie", cookie, "--------", bytes(str(cookie), 'utf-8'))
+    r.set("cookie", bytes(str(cookie), 'utf-8'))
 
 
 def load_cookie():
@@ -30,7 +31,7 @@ def load_cookie():
     if r.get('cookie'):
         print("-----------from redis get--------------------------------------------------")
         cookie = r.get('cookie').decode()
-        print(cookie)
+        print("loaded cookie------------------------>", cookie)
         return {"Set-Cookie": cookie}
     cookie = aiohttp.CookieJar()
     print("cookie in load", cookie._cookies)
@@ -56,11 +57,15 @@ async def main():
                 # print([f"{i} -----" for i in s.cookie_jar])
                 # print(s.cookie_jar._cookies, "these are the cookies")
                 # cookies = s.cookie_jar.filter_cookies('http://httpbin.org')
-                cookies = s.cookie_jar._cookies['httpbin']
-                print(s.cookie_jar._cookies.values())
-                # print("output cookies", cookies)
-                # save_cookie(r.json())
-                save_cookie(f"{cookies.values()}")
+                # cookies = s.cookie_jar._cookies['httpbin']
+                cookies = s.cookie_jar._cookies
+                
+                # print("cookies ", s.cookie_jar._cookies)
+                # print([i.values() for i in s.cookie_jar._cookies.values()])
+                # # print("output cookies", cookies)
+                # # save_cookie(r.json())
+                print(cookies)
+                save_cookie(s.cookie_jar._cookies.get("httpbin")["sessioncookie"].value)
                 # print("cookie key", cookies.items())
                 # # print(f"cookies is: {cookies}")
                 # for i in s.cookie_jar:
