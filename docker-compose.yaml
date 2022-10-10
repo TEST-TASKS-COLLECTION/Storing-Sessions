@@ -20,5 +20,16 @@ services:
     image: kennethreitz/httpbin
     ports:
       - 8000:80
+  
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    command: /bin/sh -c "redis-server"
+    volumes:
+      - redisdata:/data
+    
+volumes:
+  redisdata: 
     
     
