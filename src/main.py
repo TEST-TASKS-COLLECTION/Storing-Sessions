@@ -29,6 +29,7 @@ def load_cookie():
 		print("-----------from redis get--------------------------------------------------")
 		got_cookie = r.get('cookie').decode().replace("'", '"')
 		# cookie.update_cookies()
+		print("got_cookie", got_cookie)
 		our_cookie = json.loads(got_cookie)['cookies']
 		# print("the decoded cookie is", got_cookie, type(got_cookie))
 		# print("the decoded cookie in json", )
@@ -39,7 +40,6 @@ def load_cookie():
 		print("cookie in load: ", cookie._cookies)
 		return cookie
 	# cookie.update_cookies({"sessioncookie": "pokemon123"})
-	print("cookie in load: ", cookie._cookies)
 	print("cookie in load: ", cookie._cookies)
 	return cookie
 
@@ -54,37 +54,37 @@ def create_session(headers={}, timeout=8, **kwargs):
 	headers = {
 		#'User-Agent': UserAgent().random,
 		'Referer': 'https://www.google.com/',
-		# 'Set-Cookie': "lolhead=bleach",
+		# 'Set-Cookie': "lolhead=bleach", # this doesn't
+		# 'Cookie': "lolhead=bleach", # this works seen in r.json()
 		**headers,
 	}
 	
-	print("-"*25)
-	print(headers)
-	print("-"*25)
+	# print("-"*25)
+	# print(headers)
+	# print("-"*25)
 	
 	return aiohttp.ClientSession(
 		connector=aiohttp.TCPConnector(ssl=False), 
 		timeout=session_timeout, 
 		headers=headers,
 		# cookie_jar = load_cookie()		
-  # **kwargs
+		**kwargs
 	)
 
 
 async def session_maker():
 	urls = [
-		'http://httpbin/cookies/set/sessioncookie/bleach12345',
+		'http://httpbin/cookies/set/mycookie/pokemon123',
+		# 'https://www.google.com/',
+		# 'https://www.daraz.com.np/?spm=a2a0e.pdp.header.dhome.7c46RdhGRdhGb6#',
+		# "https://www.amazon.com/"
 	]
 	cookie = load_cookie()
 	print("*"*30)
 	print("load cookie", str(cookie))
 	print("*"*30)
-	# cookie = {
-	#     "Set-Cookie": load_cookie()
-	# }
-	# cookie = {"Set-Cookie": "sessioncookie=bleach12345"}
-	# async with create_session(kwargs = cookie) as session:
-	async with create_session(cookie_jar = load_cookie()) as session:
+	async with create_session(cookie_jar = load_cookie()) as session: # this works
+	# async with create_session() as session:
 		# session = session.update_cookies(cookie)
 	# async with create_session(headers = cookie) as session:
 		print("*-*-*")
@@ -95,6 +95,18 @@ async def session_maker():
 			cookie = await r.json()
 			# save_cookie(cookie)
 			print(cookie)
+   
+   
+			# res = await r.json()
+			# print(res)
+			# res = r
+			# print(res.__dir__(), type(res))
+			# print("\nHEADERS\n")
+			# print(res._headers, type(res))
+			# print("\ncookies\n")
+			# print(res.cookies, str(res))
+			# print()
+			# print(cookie)
 			
 
 
