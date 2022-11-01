@@ -1,0 +1,32 @@
+version: '3'
+services:
+  session_main:
+    container_name: session_main
+    image: mikeyy19xx/tes_reddis:v0.0.1
+    build: 
+      context: .
+      # target: base
+    ports:
+      - "81:5000"
+    # command: flask run -h 0.0.0.0 -p 5000
+    tty: true
+    stdin_open: true
+    depends_on:
+      - httpbin
+    volumes:
+      - ./src:/app
+
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+      - "8000:80"
+  
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6380:6379"
+    command: /bin/sh -c "redis-server"
+    volumes:
+      - redisdata:/data
+volumes:
+  redisdata: 
