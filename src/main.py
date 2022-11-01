@@ -29,10 +29,15 @@ def load_cookie():
 		print("-----------from redis get--------------------------------------------------")
 		got_cookie = r.get('cookie').decode().replace("'", '"')
 		# cookie.update_cookies()
-		print("the decoded cookie is", got_cookie, type(got_cookie))
-		print("the decoded cookie in json", json.loads(got_cookie))
-		print("loaded cookie------------------------>", got_cookie['cookies'])
-		return {"Set-Cookie": got_cookie}
+		our_cookie = json.loads(got_cookie)['cookies']
+		# print("the decoded cookie is", got_cookie, type(got_cookie))
+		# print("the decoded cookie in json", )
+		print("loaded cookie------------------------>", our_cookie)
+		print("pri", cookie._cookies)
+		print("cookie in load: ", cookie._cookies)
+		cookie.update_cookies(our_cookie)
+		print("cookie in load: ", cookie._cookies)
+		return cookie
 	# cookie.update_cookies({"sessioncookie": "pokemon123"})
 	print("cookie in load: ", cookie._cookies)
 	print("cookie in load: ", cookie._cookies)
@@ -49,7 +54,8 @@ def create_session(headers={}, timeout=8, **kwargs):
 	headers = {
 		#'User-Agent': UserAgent().random,
 		'Referer': 'https://www.google.com/',
-		**headers
+		# 'Set-Cookie': "lolhead=bleach",
+		**headers,
 	}
 	
 	print("-"*25)
@@ -60,7 +66,7 @@ def create_session(headers={}, timeout=8, **kwargs):
 		connector=aiohttp.TCPConnector(ssl=False), 
 		timeout=session_timeout, 
 		headers=headers,
-		cookie_jar = load_cookie()		
+		# cookie_jar = load_cookie()		
   # **kwargs
 	)
 
